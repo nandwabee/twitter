@@ -267,26 +267,32 @@ class Twitter extends tmhOAuth {
 			$this->log('ERROR_MSG : '.$response['error']);
 		}
 
-		if (isset($response['code']) && $response['code'] != 200)
-		{
-			$_response = $this->jsonDecode($response['response'], true);
+    try{
+      if (isset($response['code']) && $response['code'] != 200)
+      {
+        $_response = $this->jsonDecode($response['response'], true);
 
-			if (array_key_exists('errors', $_response))
-			{
-				$error_code = $_response['errors'][0]['code'];
-				$error_msg = $_response['errors'][0]['message'];
-			}
-			else
-			{
-				$error_code = $response['code'];
-				$error_msg = $_response['error'];
-			}
+        if (array_key_exists('errors', $_response))
+        {
+          $error_code = $_response['errors'][0]['code'];
+          $error_msg = $_response['errors'][0]['message'];
+        }
+        else
+        {
+          $error_code = $response['code'];
+          $error_msg = $_response['error'];
+        }
 
-			$this->log('ERROR_CODE : '.$error_code);
-			$this->log('ERROR_MSG : '.$error_msg);
+        $this->log('ERROR_CODE : '.$error_code);
+        $this->log('ERROR_MSG : '.$error_msg);
 
-			throw new Exception('['.$error_code.'] '.$error_msg, $response['code']);
-		}
+        throw new Exception('['.$error_code.'] '.$error_msg, $response['code']);
+      }
+    }
+    catch(Exception $e){
+      sleep(900);
+    }
+		
 
 		switch ($format)
 		{
